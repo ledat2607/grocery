@@ -3,10 +3,10 @@
 import { storage } from "@/lib/firebase";
 import { getDownloadURL, ref, uploadBytesResumable, deleteObject } from "firebase/storage";
 import { ImagePlus, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PuffLoader } from "react-spinners";
-import { Button } from "./ui/button";
 
 interface ImageUploadProps {
   disable?: boolean;
@@ -24,17 +24,22 @@ const ImageUpload = ({
   const [isMounted, setIsMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState<number>(0);
-  const [imageRef, setImageRef] = useState<any>(null); // State to store the image reference
-
+  const [imageRef, setImageRef] = useState<any>(null);
+  const router = useRouter();
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Set imageRef from value prop when it changes
+    if (value.length > 0) {
+      const imgRef = ref(storage, value[0]); // Assuming value[0] is the download URL
+      setImageRef(imgRef);
+    }
+  }, [value]);
 
   if (!isMounted) {
     return null;
   }
 
-  //upload image
+  // Upload image
   const onUpload = async (e: any) => {
     const file = e.target.files[0];
 
@@ -46,7 +51,7 @@ const ImageUpload = ({
     const uploadTask = uploadBytesResumable(storageRef, file, {
       contentType: file.type,
     });
-    
+
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -57,26 +62,27 @@ const ImageUpload = ({
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-          onChange(downloadUrl); // Pass the image URL to parent component
+          onChange(downloadUrl); 
           setIsLoading(false);
         });
       }
     );
   };
 
-  //delete image from storage
+  // Delete image from storage
   const handleRemove = async () => {
     if (imageRef) {
       try {
-        await deleteObject(imageRef); // Delete the image from Firebase storage
-        onRemove(value[0]); // Call the parent component's onRemove to update the state
+        await deleteObject(imageRef);
+        onRemove(""); 
         toast.success("Image deleted successfully");
+        setImageRef(null); 
+        router.refresh();
       } catch (error) {
         toast.error("Error deleting image");
       }
     }
   };
-
   return (
     <div>
       {value && value.length > 0 ? (
@@ -84,14 +90,14 @@ const ImageUpload = ({
           <img
             src={value[0]}
             alt="Uploaded"
-            className="w-52 h-52 object-cover"
+            className="w-52 h-52 object-cover rounded-2xl"
           />
-          <button
-            className="absolute bg-rose-500 px-2 py-3 top-0 flex items-center justify-center rounded-t-none rounded-l-none rounded-br-2xl"
-            onClick={handleRemove}
-          >
-            <Trash className="text-white w-6 h-6 hover:animate-bounce transition-all duration-300" />
-          </button>
+          <div className="absolute cursor-pointer bg-rose-500 px-2 py-3 top-0 flex items-center justify-center rounded-t-none rounded-l-none rounded-br-2xl">
+            <Trash
+              onClick={handleRemove}
+              className="text-white w-6 h-6 hover:animate-bounce transition-all duration-300"
+            />
+          </div>
         </div>
       ) : (
         <div className="w-52 h-52 rounded-xl border-2 border-dashed overflow-hidden border-gray-400 flex items-center justify-center flex-col gap-3">
@@ -121,4 +127,5 @@ const ImageUpload = ({
     </div>
   );
 };
+
 export default ImageUpload;

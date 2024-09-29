@@ -1,37 +1,33 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import CellImage from "./cell-image";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { CellAction } from "./cell-action";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type BillboardColumns = {
+export type CategoryColumns = {
   id: string;
-  label: string;
-  imageUrl: string;
+  billboardLabel: string;
+  name: string;
   createdAt: string;
 };
 
-export const columns: ColumnDef<BillboardColumns>[] = [
+export const columns: ColumnDef<CategoryColumns>[] = [
   {
     accessorKey: "id",
-    header: "Billboard Id",
+    header: "Category Id",
   },
   {
-    accessorKey: "label",
-    header: "Label",
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: "imageUrl",
-    header: "Image",
-    cell:({row})=>{
-        const { imageUrl } = row.original;
-        return <CellImage imageUrl={imageUrl} />;
-    }
+    accessorKey: "billboardLabel",
+    header: "Billboard Label",
   },
+
   {
     accessorKey: "createdAt",
     header: ({ column }) => {
@@ -46,5 +42,5 @@ export const columns: ColumnDef<BillboardColumns>[] = [
       );
     },
   },
-  {id:"actions",cell:({row})=><CellAction data={row.original}/>}
+  { id: "actions", cell: ({ row }) => <CellAction data={row.original} /> },
 ];

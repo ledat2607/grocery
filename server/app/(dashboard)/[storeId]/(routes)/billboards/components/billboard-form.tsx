@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { storage } from "@/lib/firebase";
-import { Billboards, Store } from "@/type-db";
+import { Billboards } from "@/type-db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { deleteObject, ref } from "firebase/storage";
@@ -27,7 +27,7 @@ import toast from "react-hot-toast";
 import { z } from "zod";
 
 interface BillboardFormProps {
-  initialData: Billboards;
+  initialData?: Billboards;
 }
 const formSchema = z.object({
   label: z.string().min(1),
@@ -38,15 +38,17 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      label: initialData?.label || "", // Đảm bảo luôn có giá trị mặc định
+      imageUrl: initialData?.imageUrl || "", // Đảm bảo luôn có giá trị mặc định
+    },
   });
-  const [isLoading, setIsLoading] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const router = useRouter();
   const urlBack = `/${params.storeId}/billboards`;
 
-  //update store
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
@@ -59,16 +61,16 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
         await axios.post(`/api/stores/${params.storeId}/billboards`, data);
       }
       toast.success("Success!");
-      router.refresh();
       router.push(urlBack);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
     } finally {
+      router.refresh();
       setIsLoading(false);
     }
   };
-  //delete handle
+
   const onDelete = async () => {
     try {
       setIsLoading(true);
@@ -87,12 +89,15 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
       console.log(error);
       toast.error("Something went wrong");
     } finally {
+      router.refresh();
       setIsLoading(false);
     }
   };
+
   const title = initialData ? "Edit billboard" : "Create billboard";
   const description = initialData ? "Edit a billboard" : "Create a billboard";
-  const actionButonLabel = initialData ? "Update" : "Create";
+  const actionButtonLabel = initialData ? "Update" : "Create";
+
   return (
     <>
       <AlertModal
@@ -101,7 +106,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
         onConfirm={onDelete}
         loading={isLoading}
       />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center rounded-2xl">
         <Heading title={title} description={description} />
         {initialData && (
           <Button
@@ -129,8 +134,8 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
                     onChange={(url) => {
                       field.onChange(url);
                     }}
-                    onRemove={() => {
-                      field.onChange("");
+                    onRemove={(url) => {
+                      field.onChange(url); 
                     }}
                   />
                 </FormControl>
@@ -156,7 +161,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
           />
           <div className="pt-6 space-x-2 flex items-center justify-start">
             <Button disabled={isLoading} type="submit">
-              {actionButonLabel}
+              {actionButtonLabel}
             </Button>
           </div>
         </form>

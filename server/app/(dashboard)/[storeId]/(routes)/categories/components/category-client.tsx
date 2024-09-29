@@ -7,24 +7,24 @@ import { Separator } from "@/components/ui/separator";
 import { Billboards } from "@/type-db";
 import { PlusCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { BillboardColumns, columns } from "./columns";
+import { CategoryColumns, columns } from "./columns";
 
-interface BillboardClientProps {
-  data: BillboardColumns[];
+interface CategoryClientProps {
+  data: CategoryColumns[];
 }
 
-export const BillboardClient = ({ data }: BillboardClientProps) => {
+export const CategoryClient = ({ data }: CategoryClientProps) => {
   const params = useParams();
   const router = useRouter();
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Billboards (${data.length})`}
-          description="Billboard for your store"
+          title={`Categories (${data.length})`}
+          description="Categories for your store"
         />
         <Button
-          onClick={() => router.push(`/${params.storeId}/billboards/create`)}
+          onClick={() => router.push(`/${params.storeId}/categories/create`)}
         >
           <PlusCircle className="w-5 h-5 cursor-pointer mr-4 animate-bounce" />
           Add new
@@ -32,7 +32,7 @@ export const BillboardClient = ({ data }: BillboardClientProps) => {
       </div>
       <Separator />
 
-      <DataTable searchKey="label" columns={columns} data={data} />
+      <DataTable searchKey="name" columns={columns} data={data} />
     </>
   );
 };
