@@ -16,7 +16,9 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import axios from "axios";
+import axios from "axios"
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Store name should be min 3 characters" }),
@@ -36,8 +38,11 @@ const StoreModal = () => {
     try {
       setIsLoading(true);
       const res = await axios.post("/api/stores", values);
+      toast.success("Success!");
+      window.location.assign(`/${res.data?.id}`);
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }
