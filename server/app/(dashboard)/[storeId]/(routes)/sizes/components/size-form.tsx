@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { storage } from "@/lib/firebase";
-import { Billboards, Category } from "@/type-db";
+import { Size } from "@/type-db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { deleteObject, ref } from "firebase/storage";
@@ -34,39 +34,39 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 
-interface CategoryFormProps {
-  initialData: Category;
-  billboards: Billboards[];
+interface SizeFormProps {
+  initialData: Size;
 }
 const formSchema = z.object({
   name: z.string().min(1),
-  billboardId: z.string().min(1),
+  value: z.string().min(1),
 });
-const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
+const SizeForm = ({ initialData }: SizeFormProps) => {
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: initialData?.name || "",
+      value: initialData?.value || "",
     },
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const router = useRouter();
-  const urlBack = `/${params.storeId}/categories`;
+  const urlBack = `/${params.storeId}/sizes`;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/stores/${params.storeId}/categories/${params.categoryId}`,
+          `/api/stores/${params.storeId}/sizes/${params.sizeId}`,
           data
         );
       } else {
-        await axios.post(`/api/stores/${params.storeId}/categories`, data);
+        await axios.post(`/api/stores/${params.storeId}/sizes`, data);
       }
       toast.success("Success!");
       router.push(urlBack);
@@ -84,7 +84,7 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
       setIsLoading(true);
 
       await axios.delete(
-        `/api/stores/${params.storeId}/categories/${params.categoryId}`
+        `/api/stores/${params.storeId}/sizes/${params.categoryId}`
       );
 
       toast.success("Success!");
@@ -103,7 +103,6 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
   const description = initialData ? "Edit a category" : "Create a category";
   const actionButtonLabel = initialData ? "Update" : "Create";
 
-  console.log(initialData, billboards);
   return (
     <>
       <AlertModal
@@ -148,43 +147,17 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
             />
             <FormField
               control={form.control}
-              name="billboardId"
+              name="value"
               render={({ field }) => (
                 <FormItem className="ml-6 lg:w-[20%] w-[45%]">
-                  <FormLabel>Billboard</FormLabel>
+                  <FormLabel>Value</FormLabel>
                   <FormControl>
-                    <Select
+                    <Input
+                      className="mt-6"
                       disabled={isLoading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a billboard"
-                        />
-                      </SelectTrigger>
-
-                      <SelectContent>
-                        {billboards.map((billboard) => (
-                          <SelectItem key={billboard.id} value={billboard.id}>
-                            <div className="flex items-center justify-between w-full space-x-4">
-                              <span className="flex-grow">
-                                {billboard.label}
-                              </span>
-                              <Image
-                                src={billboard.imageUrl}
-                                alt={billboard.label}
-                                className="rounded-2xl "
-                                width={60}
-                                height={60}
-                              />
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder="Weight / Unit value..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -202,4 +175,4 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
   );
 };
 
-export default CategoryForm;
+export default SizeForm;

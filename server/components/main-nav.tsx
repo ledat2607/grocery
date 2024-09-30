@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"; // Import Select components from shadcn/ui
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"; // Import Select components from shadcn/ui
 
 const MainNav = (props: React.HtmlHTMLAttributes<HTMLElement>) => {
   const pathName = usePathname();
@@ -24,6 +30,11 @@ const MainNav = (props: React.HtmlHTMLAttributes<HTMLElement>) => {
       href: `/${params.storeId}/categories`,
       label: "Categories",
       active: pathName === `/${params.storeId}/categories`,
+    },
+    {
+      href: `/${params.storeId}/sizes`,
+      label: "Weight / Unit",
+      active: pathName === `/${params.storeId}/sizes`,
     },
     {
       href: `/${params.storeId}/settings`,
