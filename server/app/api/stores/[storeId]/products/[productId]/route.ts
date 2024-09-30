@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { Billboards, Category, Size } from "@/type-db";
+import { Product } from "@/type-db";
 import { auth } from "@clerk/nextjs/server";
 import {
   addDoc,
@@ -15,7 +15,7 @@ import { NextResponse } from "next/server";
 
 export const PATCH = async (
   req: Request,
-  { params }: { params: { storeId: string; sizeId: string } }
+  { params }: { params: { storeId: string; productId: string } }
 ) => {
   try {
     const { userId } = await auth();
@@ -29,12 +29,30 @@ export const PATCH = async (
       return new NextResponse("Request body is required", { status: 400 });
     }
 
-    const { name, value } = body;
+    const {
+      name,
+      price,
+      discountPrice,
+      category,
+      size,
+      cuisine,
+      images,
+      isFeatured,
+      isArchived,
+      qty,
+    } = body;
     if (!name) {
       return new NextResponse("Size name is required", { status: 402 });
     }
-    if (!value) {
-      return new NextResponse("Size value is required", { status: 402 });
+    if (!images || !images.length) {
+      return new NextResponse("Image is required", {
+        status: 402,
+      });
+    }
+    if (!price || !discountPrice) {
+      return new NextResponse("Price is required", {
+        status: 402,
+      });
     }
     if (!params.storeId) {
       return new NextResponse("Store not found", { status: 404 });
@@ -51,23 +69,31 @@ export const PATCH = async (
       return new NextResponse("Store not found", { status: 404 });
     }
 
-    const SizeRef = doc(db, "stores", params.storeId, "sizes", params.sizeId);
-    const SizeDoc = await getDoc(SizeRef);
+    const productRef = doc(db, "stores", params.storeId, "products", params.productId);
+    const productDoc = await getDoc(productRef);
 
-    if (!SizeDoc.exists()) {
-      return new NextResponse("Size not found", { status: 401 });
+    if (!productDoc.exists()) {
+      return new NextResponse("product not found", { status: 401 });
     }
 
-    // Update the Size
-    await updateDoc(SizeRef, {
+    // Update the product
+    await updateDoc(productRef, {
       name,
-      value,
+      price,
+      discountPrice,
+      category,
+      size,
+      cuisine,
+      images,
+      isFeatured,
+      isArchived,
+      qty,
       updatedAt: serverTimestamp(),
     });
 
-    const updatedSize = (await getDoc(SizeRef)).data() as Size;
+    const updatedproduct = (await getDoc(productRef)).data() as Product;
 
-    return NextResponse.json(updatedSize);
+    return NextResponse.json(updatedproduct);
   } catch (error) {
     console.error("Error in PATCH:", error); // Log the error
     return new NextResponse("Internal server error", { status: 500 });
@@ -76,7 +102,7 @@ export const PATCH = async (
 
 export const DELETE = async (
   req: Request,
-  { params }: { params: { storeId: string; sizeId: string } }
+  { params }: { params: { storeId: string; productId: string } }
 ) => {
   try {
     const { userId } = await auth();
@@ -87,8 +113,8 @@ export const DELETE = async (
     if (!params.storeId) {
       return new NextResponse("Store not found", { status: 404 });
     }
-    if (!params.sizeId) {
-      return new NextResponse("Size not found", { status: 404 });
+    if (!params.productId) {
+      return new NextResponse("product not found", { status: 404 });
     }
 
     const store = await getDoc(doc(db, "stores", params.storeId));
@@ -101,20 +127,20 @@ export const DELETE = async (
       return new NextResponse("Unauthorized", { status: 403 }); // Sử dụng status 403 cho không có quyền truy cập
     }
 
-    const sizeRef = doc(
+    const productRef = doc(
       db,
       "stores",
       params.storeId,
-      "sizes",
-      params.sizeId
+      "products",
+      params.productId
     );
-    const sizeSnapshot = await getDoc(sizeRef);
+    const productSnapshot = await getDoc(productRef);
 
-    if (!sizeSnapshot.exists()) {
+    if (!productSnapshot.exists()) {
       return new NextResponse("Billboard not found", { status: 404 });
     }
 
-    await deleteDoc(sizeRef);
+    await deleteDoc(productRef);
 
     return new NextResponse("Deleted successfully", { status: 200 });
   } catch (error) {

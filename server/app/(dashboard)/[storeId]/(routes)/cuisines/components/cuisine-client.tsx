@@ -6,30 +6,33 @@ import { DataTable } from "@/components/ui/data-table";
 import { Separator } from "@/components/ui/separator";
 import { PlusCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { SizeColumns, columns } from "./columns";
+import { columns, CuisineColumns } from "./columns";
 
-interface SizeClientProps {
-  data: SizeColumns[];
+interface CuisineClientProps {
+  data: CuisineColumns[];
 }
 
-export const SizeClient = ({ data }: SizeClientProps) => {
+export const CuisineClient = ({ data }: CuisineClientProps) => {
   const params = useParams();
   const router = useRouter();
+
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Weight / Unit (${data.length})`}
-          description="Weight / Unit for product in your store"
+          title={`Cuisines (${data.length})`}
+          description="Cuisines for your store"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/sizes/create`)}>
+        <Button
+          onClick={() => router.push(`/${params.storeId}/cuisines/create`)}
+        >
           <PlusCircle className="w-5 h-5 cursor-pointer mr-4 animate-bounce" />
           Add new
         </Button>
       </div>
       <Separator />
 
-      <DataTable searchKey="value" columns={columns} data={data} />
+      <DataTable searchKey="name" columns={columns} data={data} />
     </>
   );
 };

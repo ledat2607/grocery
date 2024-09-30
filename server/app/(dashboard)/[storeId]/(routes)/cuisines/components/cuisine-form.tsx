@@ -1,7 +1,6 @@
 "use client";
 
 import { Heading } from "@/components/heading";
-import ImageUpload from "@/components/image-upload";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,35 +12,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { storage } from "@/lib/firebase";
-import { Size } from "@/type-db";
+import { Cuisine } from "@/type-db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { deleteObject, ref } from "firebase/storage";
 import { Trash } from "lucide-react";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 
-interface SizeFormProps {
-  initialData: Size;
+interface CuisineFormProps {
+  initialData: Cuisine;
 }
 const formSchema = z.object({
   name: z.string().min(1),
   value: z.string().min(1),
 });
-const SizeForm = ({ initialData }: SizeFormProps) => {
+const CuisineForm = ({ initialData }: CuisineFormProps) => {
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -55,18 +44,18 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const router = useRouter();
-  const urlBack = `/${params.storeId}/sizes`;
+  const urlBack = `/${params.storeId}/cuisines`;
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/stores/${params.storeId}/sizes/${params.sizeId}`,
+          `/api/stores/${params.storeId}/cuisines/${params.cuisineId}`,
           data
         );
       } else {
-        await axios.post(`/api/stores/${params.storeId}/sizes`, data);
+        await axios.post(`/api/stores/${params.storeId}/cuisines`, data);
       }
       toast.success("Success!");
       router.push(urlBack);
@@ -84,7 +73,7 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
       setIsLoading(true);
 
       await axios.delete(
-        `/api/stores/${params.storeId}/sizes/${params.categoryId}`
+        `/api/stores/${params.storeId}/cuisines/${params.cuisineId}`
       );
 
       toast.success("Success!");
@@ -99,8 +88,8 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
     }
   };
 
-  const title = initialData ? "Edit size" : "Create size";
-  const description = initialData ? "Edit a size" : "Create a size";
+  const title = initialData ? "Edit cuisine" : "Create cuisine";
+  const description = initialData ? "Edit a cuisine" : "Create a cuisine";
   const actionButtonLabel = initialData ? "Update" : "Create";
 
   return (
@@ -126,18 +115,18 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
       <Separator />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex items-center w-full">
+          <div className="flex items-center w-full gap-6">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem className="lg:w-[30%] w-[45%]">
-                  <FormLabel>Category name</FormLabel>
+                  <FormLabel>Cuisine name</FormLabel>
                   <FormControl>
                     <Input
                       className="mt-6"
                       disabled={isLoading}
-                      placeholder="Category name..."
+                      placeholder="Cuisine name..."
                       {...field}
                     />
                   </FormControl>
@@ -149,13 +138,13 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
               control={form.control}
               name="value"
               render={({ field }) => (
-                <FormItem className="ml-6 lg:w-[20%] w-[45%]">
-                  <FormLabel>Value</FormLabel>
+                <FormItem className="lg:w-[30%] w-[45%]">
+                  <FormLabel>From</FormLabel>
                   <FormControl>
                     <Input
                       className="mt-6"
                       disabled={isLoading}
-                      placeholder="Weight / Unit value..."
+                      placeholder="Cuisine name..."
                       {...field}
                     />
                   </FormControl>
@@ -175,4 +164,4 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
   );
 };
 
-export default SizeForm;
+export default CuisineForm;

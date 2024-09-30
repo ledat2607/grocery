@@ -1,8 +1,7 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Size } from "@/type-db";
-import { BillboardColumns } from "../../billboards/components/columns";
-import { format } from "date-fns";
+
 import SizeForm from "../components/size-form";
 
 const CategoryDetailPage = async ({

@@ -15,7 +15,7 @@ import { NextResponse } from "next/server";
 
 export const PATCH = async (
   req: Request,
-  { params }: { params: { storeId: string; sizeId: string } }
+  { params }: { params: { storeId: string; cuisineId: string } }
 ) => {
   try {
     const { userId } = await auth();
@@ -31,10 +31,10 @@ export const PATCH = async (
 
     const { name, value } = body;
     if (!name) {
-      return new NextResponse("Size name is required", { status: 402 });
+      return new NextResponse("Cuisine name is required", { status: 402 });
     }
     if (!value) {
-      return new NextResponse("Size value is required", { status: 402 });
+      return new NextResponse("Cuisine value is required", { status: 402 });
     }
     if (!params.storeId) {
       return new NextResponse("Store not found", { status: 404 });
@@ -51,23 +51,29 @@ export const PATCH = async (
       return new NextResponse("Store not found", { status: 404 });
     }
 
-    const SizeRef = doc(db, "stores", params.storeId, "sizes", params.sizeId);
-    const SizeDoc = await getDoc(SizeRef);
+    const CuisineRef = doc(
+      db,
+      "stores",
+      params.storeId,
+      "cuisines",
+      params.cuisineId
+    );
+    const CuisineDoc = await getDoc(CuisineRef);
 
-    if (!SizeDoc.exists()) {
-      return new NextResponse("Size not found", { status: 401 });
+    if (!CuisineDoc.exists()) {
+      return new NextResponse("Cuisine not found", { status: 401 });
     }
 
-    // Update the Size
-    await updateDoc(SizeRef, {
+    // Update the Cuisine
+    await updateDoc(CuisineRef, {
       name,
       value,
       updatedAt: serverTimestamp(),
     });
 
-    const updatedSize = (await getDoc(SizeRef)).data() as Size;
+    const updated = (await getDoc(CuisineRef)).data() as Size;
 
-    return NextResponse.json(updatedSize);
+    return NextResponse.json(updated);
   } catch (error) {
     console.error("Error in PATCH:", error); // Log the error
     return new NextResponse("Internal server error", { status: 500 });
@@ -76,7 +82,7 @@ export const PATCH = async (
 
 export const DELETE = async (
   req: Request,
-  { params }: { params: { storeId: string; sizeId: string } }
+  { params }: { params: { storeId: string; cuisineId: string } }
 ) => {
   try {
     const { userId } = await auth();
@@ -87,7 +93,7 @@ export const DELETE = async (
     if (!params.storeId) {
       return new NextResponse("Store not found", { status: 404 });
     }
-    if (!params.sizeId) {
+    if (!params.cuisineId) {
       return new NextResponse("Size not found", { status: 404 });
     }
 
@@ -101,20 +107,20 @@ export const DELETE = async (
       return new NextResponse("Unauthorized", { status: 403 }); // Sử dụng status 403 cho không có quyền truy cập
     }
 
-    const sizeRef = doc(
+    const cuisineRef = doc(
       db,
       "stores",
       params.storeId,
-      "sizes",
-      params.sizeId
+      "cuisines",
+      params.cuisineId
     );
-    const sizeSnapshot = await getDoc(sizeRef);
+    const cuisineSnapshot = await getDoc(cuisineRef);
 
-    if (!sizeSnapshot.exists()) {
+    if (!cuisineSnapshot.exists()) {
       return new NextResponse("Billboard not found", { status: 404 });
     }
 
-    await deleteDoc(sizeRef);
+    await deleteDoc(cuisineRef);
 
     return new NextResponse("Deleted successfully", { status: 200 });
   } catch (error) {
