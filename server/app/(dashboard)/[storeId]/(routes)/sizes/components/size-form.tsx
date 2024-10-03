@@ -132,12 +132,12 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
               name="name"
               render={({ field }) => (
                 <FormItem className="lg:w-[30%] w-[45%]">
-                  <FormLabel>Category name</FormLabel>
+                  <FormLabel>Size name</FormLabel>
                   <FormControl>
                     <Input
                       className="mt-6"
                       disabled={isLoading}
-                      placeholder="Category name..."
+                      placeholder="Size..."
                       {...field}
                     />
                   </FormControl>

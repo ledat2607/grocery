@@ -148,3 +148,31 @@ export const DELETE = async (
     return new NextResponse("Internal server error", { status: 500 });
   }
 };
+
+export const GET = async (
+  req: Request,
+  { params }: { params: { storeId: string; productId: string } }
+) => {
+  try {
+    if (!params.storeId) {
+      return new NextResponse("Store not found", { status: 404 });
+    }
+    if (!params.productId) {
+      return new NextResponse("Product not found", { status: 404 });
+    }
+
+    const productRef = doc(db, "stores", params.storeId, "products", params.productId);
+    const productDoc = await getDoc(productRef);
+
+    if (!productDoc.exists()) {
+      return new NextResponse("Product not found", { status: 404 });
+    }
+
+    const productData = productDoc.data() as Product;
+
+    return NextResponse.json(productData);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return new NextResponse("Internal server error", { status: 500 });
+  }
+};

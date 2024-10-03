@@ -40,7 +40,6 @@ export const CellAction = ({ data }: CellActionProps) => {
         setIsLoading(false);
       }
     };
-    console.log(data.id);
   return (
     <>
       <AlertModal

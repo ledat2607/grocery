@@ -10,7 +10,7 @@ interface CellImageProps {
 const CellImage = ({ imageUrl }: CellImageProps) => {
   return (
     <div className="overflow-hidden w-32 h-16 relative rounded-md shadow-md">
-      <Image src={imageUrl} alt="" fill />
+      <Image src={imageUrl} alt="" fill className="object-contain" />
     </div>
   );
 };

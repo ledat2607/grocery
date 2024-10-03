@@ -21,11 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { storage } from "@/lib/firebase";
 import { Billboards, Category } from "@/type-db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { deleteObject, ref } from "firebase/storage";
 import { Trash } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -41,14 +39,17 @@ interface CategoryFormProps {
 const formSchema = z.object({
   name: z.string().min(1),
   billboardId: z.string().min(1),
+  billboardLabel: z.string().min(1),
 });
 const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: initialData?.name || "",
+    defaultValues: initialData || {
+      name: "",
+      billboardId: "",
+      billboardLabel: "",
     },
   });
 
@@ -103,7 +104,6 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
   const description = initialData ? "Edit a category" : "Create a category";
   const actionButtonLabel = initialData ? "Update" : "Create";
 
-  console.log(initialData, billboards);
   return (
     <>
       <AlertModal
@@ -155,15 +155,17 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
                   <FormControl>
                     <Select
                       disabled={isLoading}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value); // Cập nhật giá trị form khi chọn một billboard mới
+                        form.setValue(
+                          "billboardLabel",
+                          billboards.find((b) => b.id === value)?.label || ""
+                        );
+                      }}
+                      value={field.value} // Sử dụng giá trị từ form
                     >
                       <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a billboard"
-                        />
+                        <SelectValue placeholder="Select a billboard" />
                       </SelectTrigger>
 
                       <SelectContent>
@@ -176,7 +178,7 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
                               <Image
                                 src={billboard.imageUrl}
                                 alt={billboard.label}
-                                className="rounded-2xl "
+                                className="rounded-2xl"
                                 width={60}
                                 height={60}
                               />
@@ -191,10 +193,18 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
               )}
             />
           </div>
-          <div className="pt-6 space-x-2 flex items-center justify-start">
-            <Button disabled={isLoading} type="submit">
-              {actionButtonLabel}
-            </Button>
+          <div
+            className={`${
+              isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+            } bg-slate-800 text-white flex items-center justify-center mt-6 w-[100px] py-2 px-4 rounded hover:bg-slate-800 transition`}
+            onClick={() => {
+              if (!isLoading) {
+                const formData = form.getValues();
+                onSubmit(formData);
+              }
+            }}
+          >
+            {actionButtonLabel}
           </div>
         </form>
       </Form>

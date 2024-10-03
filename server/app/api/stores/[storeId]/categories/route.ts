@@ -12,79 +12,63 @@ import {
 } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*", // Hoặc thay "*" bằng domain cụ thể như "http://localhost:3000"
+  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
 export const POST = async (
   req: Request,
   { params }: { params: { storeId: string } }
 ) => {
+  if (req.method === "OPTIONS") {
+    return new NextResponse(null, { status: 200, headers: corsHeaders });
+  }
+
   try {
     const { userId } = await auth();
     if (!userId) {
-      return new NextResponse("Un_authorization", { status: 404 });
+      return new NextResponse("Unauthorized", { status: 401, headers: corsHeaders });
     }
 
     const body = await req.json();
     const { name, billboardId } = body;
-    console.log(body);
-    // Kiểm tra các trường bắt buộc
-    if (!name) {
-      return new NextResponse("Category name is required", { status: 402 });
-    }
 
-    if (!billboardId) {
-      return new NextResponse("Billboard is required", { status: 402 });
-    }
-
-    if (!params.storeId) {
-      return new NextResponse("Store not found", { status: 404 });
+    if (!name || !billboardId || !params.storeId) {
+      return new NextResponse("Missing required fields", { status: 400, headers: corsHeaders });
     }
 
     const store = await getDoc(doc(db, "stores", params.storeId));
-    if (store.exists()) {
-      let storeData = store.data();
-      if (storeData?.userId !== userId) {
-        return new NextResponse("Un_authorized", { status: 405 });
-      }
-    } else {
-      return new NextResponse("Store not found", { status: 404 });
+    if (!store.exists() || store.data()?.userId !== userId) {
+      return new NextResponse("Store not found or unauthorized", { status: 404, headers: corsHeaders });
     }
 
-    const billboardRef = await getDoc(
-      doc(db, "stores", params.storeId, "billboards", billboardId)
-    );
-
+    const billboardRef = await getDoc(doc(db, "stores", params.storeId, "billboards", billboardId));
     if (!billboardRef.exists()) {
-      return new NextResponse("Billboard not found", { status: 404 });
+      return new NextResponse("Billboard not found", { status: 404, headers: corsHeaders });
     }
-
-    const billboardData = billboardRef.data();
-    const billboardLabel = billboardData?.label;
 
     const categoryData = {
       name,
-      billboardLabel,
+      billboardLabel: billboardRef.data()?.label,
       billboardId,
       createdAt: serverTimestamp(),
     };
 
-    // Tạo category mới trong Firestore
-    const categoryRef = await addDoc(
-      collection(db, "stores", params.storeId, "categories"),
-      categoryData
-    );
+    const categoryRef = await addDoc(collection(db, "stores", params.storeId, "categories"), categoryData);
     const id = categoryRef.id;
 
-    // Cập nhật thêm thông tin id và updatedAt
     await updateDoc(doc(db, "stores", params.storeId, "categories", id), {
       ...categoryData,
       id,
       updatedAt: serverTimestamp(),
     });
 
-    // Trả về response với id và dữ liệu của category
-    return NextResponse.json({ id, ...categoryData });
+    return NextResponse.json({ id, ...categoryData }, { headers: corsHeaders });
   } catch (error) {
     console.error("Error creating category:", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    return new NextResponse("Internal server error", { status: 500, headers: corsHeaders });
   }
 };
 
@@ -92,17 +76,22 @@ export const GET = async (
   req: Request,
   { params }: { params: { storeId: string } }
 ) => {
+  if (req.method === "OPTIONS") {
+    return new NextResponse(null, { status: 200, headers: corsHeaders });
+  }
+
   try {
     if (!params.storeId) {
-      return new NextResponse("Store not found", { status: 404 });
+      return new NextResponse("Store not found", { status: 404, headers: corsHeaders });
     }
 
-    const categoryData = (
+    const categories = (
       await getDocs(collection(doc(db, "stores", params.storeId), "categories"))
     ).docs.map((doc) => doc.data()) as Category[];
 
-    return NextResponse.json(categoryData);
+    return NextResponse.json(categories, { headers: corsHeaders });
   } catch (error) {
-    return new NextResponse("Internal server error", { status: 500 });
+    console.error("Error fetching categories:", error);
+    return new NextResponse("Internal server error", { status: 500, headers: corsHeaders });
   }
 };

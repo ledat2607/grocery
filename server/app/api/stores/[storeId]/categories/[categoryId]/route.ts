@@ -29,7 +29,7 @@ export const PATCH = async (
       return new NextResponse("Request body is required", { status: 400 });
     }
 
-    const { name, billboardLabel } = body;
+    const { name, billboardLabel, billboardId } = body;
     if (!name) {
       return new NextResponse("Category name is required", { status: 402 });
     }

@@ -5,6 +5,7 @@ import { db } from "@/lib/firebase";
 import { CuisineClient } from "./components/product-client";
 import { ProductColumns } from "./components/columns";
 import { formatter } from "@/lib/utils";
+import axios from "axios";
 
 const ProductPage = async ({ params }: { params: { storeId: string } }) => {
   const productData = (
@@ -27,7 +28,6 @@ const ProductPage = async ({ params }: { params: { storeId: string } }) => {
       ? format(item.createdAt.toDate(), "MMMM do, yyyy")
       : "",
   }));
-
   return (
     <div className=" flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">

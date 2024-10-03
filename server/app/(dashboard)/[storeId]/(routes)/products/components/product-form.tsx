@@ -59,20 +59,19 @@ const ProductForm = ({
   categories,
 }: ProductFormProps) => {
   const [open, setOpen] = useState(false);
-  console.log(initialData);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: initialData.name || "",
-      price: initialData.price || 1,
-      images: initialData.images || [],
-      isFeatured: initialData.isFeatured || true,
-      isArchived: initialData.isArchived || false,
-      qty: initialData.qty || 1,
-      discountPrice: initialData.discountPrice || 1,
-      size: initialData.size || "",
-      cuisine: initialData.cuisine || "",
-      category: initialData.category || "",
+    defaultValues: initialData || {
+      name: "",
+      price: 1,
+      images: [],
+      isFeatured: true,
+      isArchived: false,
+      qty: 1,
+      discountPrice: 1,
+      size: "",
+      cuisine: "",
+      category: "",
     },
   });
 

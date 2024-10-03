@@ -3,14 +3,18 @@ import { Billboards, Product, Size } from "@/type-db";
 import { auth } from "@clerk/nextjs/server";
 import {
   addDoc,
+  and,
   collection,
   doc,
   getDoc,
   getDocs,
+  query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { NextResponse } from "next/server";
+import { json } from "stream/consumers";
 
 export const POST = async (
   req: Request,
@@ -98,12 +102,60 @@ export const GET = async (
       return new NextResponse("Store not found", { status: 404 });
     }
 
-    const sizeData = (
-      await getDocs(collection(doc(db, "stores", params.storeId), "products"))
-    ).docs.map((doc) => doc.data()) as Product[];
+    const { searchParams } = new URL(req.url);
 
-    return NextResponse.json(sizeData);
+    const productRef = collection(
+      doc(db, "stores", params.storeId),
+      "products"
+    );
+    let productQuery;
+
+    let queryContraints = [];
+
+    // Filler by size
+    const size = searchParams.get("size");
+    if (size) {
+      queryContraints.push(where("size", "==", size));
+    }
+
+    // Filler by category
+    const category = searchParams.get("category");
+    if (category) {
+      queryContraints.push(where("category", "==", category));
+    }
+
+    // Filler by cuisine
+    const cuisine = searchParams.get("cuisine");
+    if (cuisine) {
+      queryContraints.push(where("cuisine", "==", cuisine));
+    }
+
+    // Filler by isFeatured
+    const isFeatured = searchParams.get("isFeatured");
+    if (isFeatured) {
+      queryContraints.push(where("isFeatured", "==", isFeatured === "true"));
+    }
+    const isArchived = searchParams.get("isArchived");
+    if (isArchived) {
+      queryContraints.push(where("isArchived", "==", isArchived === "true"));
+    }
+
+   
+    if (queryContraints.length > 0) {
+      productQuery = query(productRef, and(...queryContraints));
+    } else {
+      productQuery = query(productRef);
+    }
+
+    const querySnapshot = await getDocs(productQuery);
+
+    const productData: Product[] = querySnapshot.docs.map(
+      (doc) => doc.data() as Product
+    );
+
+    return NextResponse.json(productData);
   } catch (error) {
+    console.error("Error fetching products:", error);
     return new NextResponse("Internal server error", { status: 500 });
   }
 };
