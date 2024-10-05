@@ -12,8 +12,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 const HomePage = async () => {
-  const productData = await getProducts({ isFeatured: true });
+  const productData = (
+    await getDocs(
+      collection(doc(db, "stores", "yA12sY3M9e37ao1J4G4M"), "products")
+    )
+  ).docs.map((doc) => doc.data()) as Products[];
+
   const products = productData.filter((pro) => pro.isFeatured === true);
+  console.log(productData);
   return (
     <>
       <Container className="px-4 lg:px-12">
@@ -59,7 +65,7 @@ const HomePage = async () => {
           </div>
         </section>
         {/*popular section */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-6 gap-y-10 md:gap-12 my-4 py-8">
+        <section className="grid grid-cols-2 md:grid-cols-5 gap-6 gap-y-10 md:gap-12 my-4 py-8">
           {products.map((item) => (
             <Popularcontent key={item.id} data={item} />
           ))}

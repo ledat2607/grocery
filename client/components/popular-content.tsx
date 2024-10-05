@@ -7,15 +7,20 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { Heart, HeartCrack, ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import useCart from "@/hooks/use-cart";
 
 interface PopularcontentProps {
   data: Products;
 }
     
 const Popularcontent = ({ data }: PopularcontentProps) => {
+  const cart = useCart();
     const [isLiked, setIsLiked] = useState(false);
+    const addToCart = (data: Products) => {
+      cart.addItem({ ...data, qty: 1 });
+    };
   return (
-    <Card className="w-full min-h-[340px] bg-white shadow-lg border-gradient flex flex-col items-center justify-center relative py-6 pt-24 lg:pt-28">
+    <Card className="w-full min-h-[340px] bg-white shadow-lg border-gradient flex flex-col items-center justify-center relative py-6 pt-24 mb-24 lg:pt-28">
       <div className="absolute bg-green-500 -top-[4%] md:-top-[20%] overflow-hidden w-24 md:w-40 h-24 md:h-40 rounded-full flex items-center justify-center p-1 md:p-2">
         <div className="w-full h-full rounded-full relative bg-white">
           <Image
@@ -61,7 +66,10 @@ const Popularcontent = ({ data }: PopularcontentProps) => {
       </div>
 
       {/*Card */}
-      <Button className="absolute top-0 right-0 rounded-tr-none rounded-tl-lg rounded-bl-lg rounded-br-none px-3">
+      <Button
+        onClick={() => addToCart(data)}
+        className="absolute top-0 right-0 rounded-tr-none rounded-tl-lg rounded-bl-lg rounded-br-none px-3"
+      >
         <ShoppingCart className="w-4 h-4" />
       </Button>
 

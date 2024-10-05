@@ -19,31 +19,38 @@ interface MenuPageProps {
   };
 }
 const MenuPage = async ({ searchParams }: MenuPageProps) => {
-  const categories = await getCategories();
-  const sizes = await getSizes();
-  const cuisines = await getCuisines();
-  const products = await getProducts({
-    size: searchParams.size,
-    isFeatured: searchParams.isFeatured,
-    cuisine: searchParams.cuisine,
-    category: searchParams.category,
-  });
-  return (
-    <Container className="px-4 md:px-12">
-      <div className="grid grid-cols-2 md:grid-cols-12 py-12 gap-2">
-        <div className="hidden md:block col-span-2">
-          <FilterContainer>
-            <CategoryFilter categories={categories} />
-            <SizeFilter sizes={sizes} />
-            <CuisinFilter cuisines={cuisines} />
-          </FilterContainer>
+  try {
+    const categories = await getCategories();
+    const sizes = await getSizes();
+    const cuisines = await getCuisines();
+    const products = await getProducts({
+      size: searchParams.size,
+      isFeatured: searchParams.isFeatured,
+      cuisine: searchParams.cuisine,
+      category: searchParams.category,
+    });
+
+    return (
+      <Container className="px-4 md:px-12">
+        <div className="grid grid-cols-2 md:grid-cols-12 py-12 gap-2">
+          <div className="hidden md:block col-span-2">
+            <FilterContainer>
+              <CategoryFilter categories={categories} />
+              <SizeFilter sizes={sizes} />
+              <CuisinFilter cuisines={cuisines} />
+            </FilterContainer>
+          </div>
+          <Box className="col-span-12 md:col-span-10 flex flex-col items-start justify-start">
+            <PageContent product={products} />
+          </Box>
         </div>
-        <Box className="col-span-12 md:col-span-10 flex flex-col items-start justify-start">
-          <PageContent product={products} />
-        </Box>
-      </div>
-    </Container>
-  );
+      </Container>
+    );
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return <div>Error loading data</div>;
+  }
 };
+
 
 export default MenuPage;

@@ -6,6 +6,7 @@ import { ChevronRight, Home } from "lucide-react";
 import Link from "next/link";
 import Gallery from "./components/gallery/page";
 import Info from "./components/Info";
+import SuggestedList from "./components/suggested-list";
 
 interface ProductDetailProps {
   params: {
@@ -37,6 +38,7 @@ const ProductDetail = async ({ params }: ProductDetailProps) => {
               <Info product={product} />
             </div>
           </div>
+          <SuggestedList products={suggestedProduct} />
         </div>
       </Container>
     </div>

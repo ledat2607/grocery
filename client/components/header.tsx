@@ -7,6 +7,7 @@ import { UserButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import MainNav from "./main-nav";
 import { useEffect, useState } from "react";
+import CartActionButon from "./cart-action";
 
 interface HeaderProps {
   userId: string | null;
@@ -55,6 +56,7 @@ const Header = ({ userId }: HeaderProps) => {
               </Link>
             </div>
           )}
+          {userId && <CartActionButon />}
         </div>
       </Container>
     </header>

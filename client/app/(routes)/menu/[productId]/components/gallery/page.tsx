@@ -1,7 +1,7 @@
 'use client'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import GallerContent from "./gallery-content";
+import GalleryContent from "./gallery-content";
 import GalleryTab from "./gallery-tab";
 
 interface GalleryProps {
@@ -17,7 +17,7 @@ const Gallery = ({ image }: GalleryProps) => {
           value={tab.url.toString()}
           className="flex items-center justify-center"
         >
-          <GallerContent url={tab.url} />
+          <GalleryContent url={tab.url} />
         </TabsContent>
       ))}
       <TabsList className="bg-transparent w-full">
@@ -30,5 +30,6 @@ const Gallery = ({ image }: GalleryProps) => {
     </Tabs>
   );
 };
+
  
 export default Gallery;
