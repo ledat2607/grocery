@@ -1,7 +1,7 @@
 
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { CuisineColumns } from "./columns";
+import { OrderColumns } from "./columns";
 import { useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import axios from "axios";
 import { AlertModal } from "@/components/modal/alert-modal";
 
 interface CellActionProps {
-  data: CuisineColumns;
+  data: OrderColumns;
 }
 
 export const CellAction = ({ data }: CellActionProps) => {
@@ -31,7 +31,7 @@ export const CellAction = ({ data }: CellActionProps) => {
     const onDelete = async () => {
       try {
         setIsLoading(true);
-        await axios.delete(`/api/stores/${params.storeId}/cuisines/${data.id}`);
+        await axios.delete(`/api/stores/${params.storeId}/orders/${data.id}`);
         toast.success("Success!");
       } catch (error) {
         console.log(error);
@@ -59,22 +59,6 @@ export const CellAction = ({ data }: CellActionProps) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <Separator />
-          <DropdownMenuItem
-            onClick={() => onCopy(data.id)}
-            className="cursor-pointer text-green-500"
-          >
-            <Copy className="w-4 h-4 mr-4 text-green-500" />
-            Copy Id
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(`/${params.storeId}/cuisines/${data.id}`)
-            }
-            className="cursor-pointer text-yellow-500"
-          >
-            <Pen className="w-4 h-4 text-yellow-500 mr-4" />
-            Edit
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setOpen(true)}
             className="cursor-pointer text-red-500"

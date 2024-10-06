@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import useCart from "@/hooks/use-cart";
 import { Eraser } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import CartItem from "./cart-item";
@@ -18,6 +18,7 @@ interface CartContentProps {
 const CartContent = ({ userId }: CartContentProps) => {
   const cart = useCart();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const totalPrice = cart.items.reduce((total, item) => {
     return total + Number(item.discountPrice * item.qty);
@@ -29,6 +30,7 @@ const CartContent = ({ userId }: CartContentProps) => {
   useEffect(() => {
     if (searchParams.get("success")) {
       toast.success("Payment completed");
+      cart.removeAll();
     }
     if (searchParams.get("canceled")) {
       toast.error("Something went wrong");

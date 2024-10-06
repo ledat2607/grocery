@@ -53,6 +53,7 @@ export interface Product {
   size: string;
   cuisine: string;
   category: string;
+  sold_out: number;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

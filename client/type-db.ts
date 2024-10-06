@@ -65,6 +65,7 @@ export interface Order {
   orderItems: Products[];
   address: string;
   order_status: string;
+  userId: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

@@ -75,6 +75,7 @@ export const POST = async (
       isArchived,
       qty,
       createdAt: serverTimestamp(),
+      sold_out: 0,
     };
 
     const productRef = await addDoc(

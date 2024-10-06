@@ -14,7 +14,7 @@ import Link from "next/link";
 const HomePage = async () => {
   const productData = (
     await getDocs(
-      collection(doc(db, "stores", "yA12sY3M9e37ao1J4G4M"), "products")
+      collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "products")
     )
   ).docs.map((doc) => doc.data()) as Products[];
 
