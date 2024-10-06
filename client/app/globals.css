@@ -6,11 +6,29 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 .border-gradient {
-  border: 2px solid; /* Set the border size */
-  border-image: linear-gradient(90deg, #6effaa, #0e8d03, #37ecba, #0c9e49);
-  border-image-slice: 1;
-  border-radius: 20px;
+  border: 2px solid transparent; /* Set the border size */
+  border-radius: 40px; /* Rounded corners */
+  background: linear-gradient(white, white) padding-box, 
+              linear-gradient(90deg, #6effaa, #0e8d03, #37ecba, #0c9e49) border-box;
+  background-clip: padding-box, border-box;
+  animation: gradient-border 3s infinite;
 }
+
+@keyframes gradient-border {
+  0% {
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(90deg, #6effaa, #0e8d03, #37ecba, #0c9e49) border-box;
+  }
+  50% {
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(90deg, #37ecba, #0c9e49, #6effaa, #0e8d03) border-box;
+  }
+  100% {
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(90deg, #6effaa, #0e8d03, #37ecba, #0c9e49) border-box;
+  }
+}
+
 
 @layer utilities {
   .text-balance {

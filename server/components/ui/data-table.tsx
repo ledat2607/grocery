@@ -92,7 +92,9 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className={
-                    row.getValue("isPaid") === false && "text-red-400 font-bold"
+                    row.getValue("isPaid") === false
+                      ? "text-red-400 font-bold"
+                      : undefined
                   }
                 >
                   {row.getVisibleCells().map((cell) => (

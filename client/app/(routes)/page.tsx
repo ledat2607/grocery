@@ -1,10 +1,12 @@
 import getProducts from "@/actions/get-products";
 import Container from "@/components/container";
 import Popularcontent from "@/components/popular-content";
+import SlideBanner from "@/components/slide-banner";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { db } from "@/lib/firebase";
-import { Products } from "@/type-db";
+import { Billboards, Products } from "@/type-db";
 import { UserButton } from "@clerk/nextjs";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { FileHeart, Salad, Truck } from "lucide-react";
@@ -19,7 +21,12 @@ const HomePage = async () => {
   ).docs.map((doc) => doc.data()) as Products[];
 
   const products = productData.filter((pro) => pro.isFeatured === true);
-  console.log(productData);
+  const billboards = (
+    await getDocs(
+      collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "billboards")
+    )
+  ).docs.map((doc) => doc.data()) as Billboards[];
+
   return (
     <>
       <Container className="px-4 lg:px-12">
@@ -64,8 +71,13 @@ const HomePage = async () => {
             </div>
           </div>
         </section>
+        <section className="mt-24 mb-8">
+          <SlideBanner billboards={billboards} />
+        </section>
         {/*popular section */}
-        <section className="grid grid-cols-2 md:grid-cols-5 gap-6 gap-y-10 md:gap-12 my-4 py-8">
+        <h2 className="font-bold text-3xl capitalize">All products</h2>
+        <Separator className="mt-2" />
+        <section className="grid grid-cols-2 md:grid-cols-5 gap-6 gap-y-10 md:gap-12 my-4 py-8 mt-16">
           {products.map((item) => (
             <Popularcontent key={item.id} data={item} />
           ))}
@@ -112,40 +124,60 @@ const HomePage = async () => {
           </div>
         </section>
         {/**chef */}
-        <section className=" my-4 py-12 flex flex-col items-center justify-center">
+        <section className="my-4 py-12 flex flex-col items-center justify-center">
           <h2 className="text-5xl md:text-5xl font-bold tracking-wider uppercase text-neutral-700 my-4">
-            Our Special Chefs
+            Our Special Products
           </h2>
           <p className="w-full text-center md:w-[560px] text-base text-neutral-500 my-2">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic,
-            commodi repellendus quod tempore reiciendis mollitia perferendis{" "}
+            Discover the best quality products from our store, carefully
+            selected just for you.
           </p>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full my-6 mt-20">
-            <Card className="shadow-lg relative rounded-md border-none  flex flex-col items-center justify-end h-96 md:h-[520px] bg-hero/30">
+            {/* Product Card 1 */}
+            <Card className="shadow-lg relative rounded-2xl border-none flex flex-col items-center justify-end h-96 md:h-[520px] bg-white">
               <Image
-                src="/chef1.png"
-                alt="Chef One"
-                className="w-full h-full object-contain"
+                src="/fresh.png" // Replace with a grocery product image
+                alt="Fresh Vegetables"
+                className="w-full h-full object-cover rounded-2xl"
                 fill
               />
+              <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-gray-900 to-transparent text-white text-center">
+                <h3 className="text-xl font-semibold">Fresh Vegetables</h3>
+                <p className="text-sm">
+                  Healthy and organic produce sourced locally.
+                </p>
+              </div>
             </Card>
 
-            <Card className="shadow-lg relative rounded-md border-none  flex flex-col items-center justify-end h-96 md:h-[520px] mt-20 bg-hero/30">
+            {/* Product Card 2 */}
+            <Card className="shadow-lg rounded-2xl relative border-none flex flex-col items-center justify-end h-96 md:h-[520px] mt-20 bg-white">
               <Image
-                src="/chef3.png"
-                alt="Chef One"
-                className="w-full h-full object-contain"
+                src="/fruits.png" // Replace with another grocery product image
+                alt=""
+                className="w-full h-full object-cover rounded-2xl"
                 fill
               />
+              <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-gray-900 to-transparent text-white text-center">
+                <h3 className="text-xl font-semibold">Artisan Bread</h3>
+                <p className="text-sm">Fresh fruit for you</p>
+              </div>
             </Card>
 
-            <Card className="shadow-lg relative rounded-md border-none  flex flex-col items-center justify-end h-96 md:h-[520px] bg-hero/30">
+            {/* Product Card 3 */}
+            <Card className="shadow-lg relative rounded-2xl border-none flex flex-col items-center justify-end h-96 md:h-[520px] bg-white">
               <Image
-                src="/chef2.png"
-                alt="Chef One"
-                className="w-full h-full object-contain"
+                src="/dairy.jpg" // Replace with another grocery product image
+                alt="Dairy Products"
+                className="w-full h-full object-cover rounded-2xl"
                 fill
               />
+              <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-gray-900 to-transparent text-white text-center">
+                <h3 className="text-xl font-semibold">Dairy Products</h3>
+                <p className="text-sm">
+                  High-quality dairy for a nutritious diet.
+                </p>
+              </div>
             </Card>
           </div>
         </section>
@@ -153,5 +185,5 @@ const HomePage = async () => {
     </>
   );
 };
- 
+
 export default HomePage;

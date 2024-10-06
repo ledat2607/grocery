@@ -68,7 +68,7 @@ const Popularcontent = ({ data }: PopularcontentProps) => {
       {/*Card */}
       <Button
         onClick={() => addToCart(data)}
-        className="absolute top-0 right-0 rounded-tr-none rounded-tl-lg rounded-bl-lg rounded-br-none px-3"
+        className="absolute top-7 right-0 rounded-tr-none rounded-tl-lg rounded-bl-lg rounded-br-none px-3"
       >
         <ShoppingCart className="w-4 h-4" />
       </Button>
@@ -76,7 +76,7 @@ const Popularcontent = ({ data }: PopularcontentProps) => {
       {/*Wishlist */}
       <Button
         variant={isLiked ? "default" : "outline"}
-        className="absolute top-0 left-0 rounded-tl-none rounded-tr-lg rounded-br-lg rounded-bl-none px-3"
+        className="absolute top-7 left-0 rounded-tl-none rounded-tr-lg rounded-br-lg rounded-bl-none px-3"
       >
         {isLiked ? (
           <Heart className="w-4 h-4" />

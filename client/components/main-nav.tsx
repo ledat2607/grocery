@@ -34,8 +34,8 @@ const MainNav = ({ className, scolled, ...props }: MainNavProps) => {
         label: "About",
       },
       {
-        href: "/contact",
-        active: pathName === "/contact",
+        href: "/contacts",
+        active: pathName === "/contacts",
         label: "Contact",
       },
     ];
