@@ -7,7 +7,7 @@ import { CellAction } from "./cell-action";
 import { Product } from "@/type-db";
 import CellImage from "../../billboards/components/cell-image";
 import { useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Đảm bảo đường dẫn đúng đến component Select
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; 
 import { Modal } from "@/components/modal";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -23,6 +23,7 @@ export type OrderColumns = {
   images: string[];
   order_status: string;
   createdAt: string;
+  productQuantities: { productId: string; qty: number }[]; // Cập nhật để bao gồm thông tin về sản phẩm và số lượng
 };
 
 export const columns: ColumnDef<OrderColumns>[] = [
@@ -84,7 +85,10 @@ export const columns: ColumnDef<OrderColumns>[] = [
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ order_status: selectedStatus }),
+              body: JSON.stringify({
+                order_status: selectedStatus,
+                product: row.original,
+              }),
             }
           );
 
@@ -95,7 +99,7 @@ export const columns: ColumnDef<OrderColumns>[] = [
           }
 
           const updatedOrder = await response.json();
-          setIsOpen(false); 
+          setIsOpen(false);
           toast.success("Updated");
           router.refresh();
         } catch (error) {
@@ -155,5 +159,6 @@ export const columns: ColumnDef<OrderColumns>[] = [
       );
     },
   },
+
   { id: "actions", cell: ({ row }) => <CellAction data={row.original} /> },
 ];

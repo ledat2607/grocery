@@ -18,9 +18,7 @@ export const POST = async (req: Request) => {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-   
   } catch (error) {
-  
     return new NextResponse("Error", { status: 400 });
   }
 
@@ -38,8 +36,6 @@ export const POST = async (req: Request) => {
   const addressString = addressComponents.filter((a) => a !== null).join(",");
 
   if (event.type === "checkout.session.completed") {
-   
-
     if (session?.metadata?.orderId) {
       await updateDoc(
         doc(
@@ -61,4 +57,3 @@ export const POST = async (req: Request) => {
 
   return new NextResponse(null, { status: 200 });
 };
-  

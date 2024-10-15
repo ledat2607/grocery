@@ -10,7 +10,7 @@ interface GalleryProps {
 
 const Gallery = ({ image }: GalleryProps) => {
   return (
-    <Tabs defaultValue={image[1].url} className="pl-4">
+    <Tabs defaultValue={image[0].url} className="pl-4">
       {image.map((tab) => (
         <TabsContent
           key={tab.url}

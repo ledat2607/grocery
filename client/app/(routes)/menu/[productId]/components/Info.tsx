@@ -20,6 +20,7 @@ const Info = ({ product }: InfoProps) => {
   const addToCart = (data:Products)=>{
     cart.addItem({ ...data, qty: qty });
   }
+  console.log(product);
   return (
     <div>
       <h1 className="text-3xl font-bold text-neutral-800">{product.name}</h1>
@@ -55,6 +56,7 @@ const Info = ({ product }: InfoProps) => {
         <div className="col-span-1 space-y-8">
           <p className="text-lg font-semibold text-neutral-700">Price</p>
           <p className="text-lg font-semibold text-neutral-700">Serves</p>
+          <p className="text-lg font-semibold text-neutral-700">Stock</p>
         </div>
         <div className="col-span-3 space-y-8">
           <div className="flex items-center gap-8">
@@ -81,6 +83,10 @@ const Info = ({ product }: InfoProps) => {
                 {num}
               </div>
             ))}
+          </div>
+          <div className="flex items-center gap-4">
+            <p>{product.qty}</p>
+            <p className="text-green-500 font-bold underline">Sold: {product.sold_out}</p>
           </div>
         </div>
       </div>

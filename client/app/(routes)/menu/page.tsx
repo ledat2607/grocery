@@ -9,6 +9,9 @@ import SizeFilter from "./components/size-filter";
 import CuisinFilter from "./components/cuisine-filter";
 import PageContent from "./components/page-content";
 import getProducts from "@/actions/get-products";
+import { collection, doc, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { Category, Products } from "@/type-db";
 
 interface MenuPageProps {
   searchParams: {
@@ -20,12 +23,18 @@ interface MenuPageProps {
 }
 const MenuPage = async ({ searchParams }: MenuPageProps) => {
   try {
-    const categories = await getCategories();
+    const categories = (
+      await getDocs(
+        collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "categories")
+      )
+    ).docs.map((doc) => doc.data()) as Category[];
+
     const sizes = await getSizes();
     const cuisines = await getCuisines();
+
     const products = await getProducts({
       size: searchParams.size,
-      isFeatured: searchParams.isFeatured,
+      isFeatured: true,
       cuisine: searchParams.cuisine,
       category: searchParams.category,
     });

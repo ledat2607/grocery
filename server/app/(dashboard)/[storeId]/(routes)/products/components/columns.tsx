@@ -77,7 +77,20 @@ export const columns: ColumnDef<ProductColumns>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const qty = row.original.qty;
+      return (
+        <span
+          className={
+            qty < 20 ? "text-red-500 cursor-pointer" : "cursor-not-allowed"
+          }
+        >
+          {qty}
+        </span>
+      );
+    },
   },
+
   {
     accessorKey: "isFeatured",
     header: "Feature",

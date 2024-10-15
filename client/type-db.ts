@@ -55,6 +55,7 @@ export interface Products {
   category: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
+  sold_out: number;
 }
 
 
