@@ -1,19 +1,31 @@
+'use client';
 
-'use client'
-
+import { useEffect, useState } from "react";
 import Box from "@/components/box";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Order } from "@/type-db";
 import Image from "next/image";
+import Modal from "./modal";
 
 interface OrderItemProps {
   order: Order;
 }
 
 const OrderItem = ({ order }: OrderItemProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Box>
-      <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6 px-4 py-2 items-center rounded-md border border-gray-100">
+      <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-6 px-4 py-2 items-center rounded-md border border-gray-100">
         <div className="flex items-center gap-2">
           {order.orderItems.map((item) => (
             <div
@@ -39,11 +51,15 @@ const OrderItem = ({ order }: OrderItemProps) => {
             order.isPaid ? "text-green-500" : "text-red-500"
           )}
         >
-          {order.isPaid ? "Paid" : "Not paid"}
+          {order.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
         </p>
+        <Button onClick={handleOpenModal}>Xem chi tiết</Button>
       </div>
+
+      {/* Modal component */}
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} order={order} />
     </Box>
   );
 };
- 
+
 export default OrderItem;

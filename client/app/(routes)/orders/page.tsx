@@ -20,7 +20,7 @@ const OrderPage = async({ params }: { params: { storeId: string } }) => {
 const formatedOrder = orderData.filter((item) => item?.userId === userId);
   return (
     <>
-      <Container className="bg-white rounded-lg my-4">
+      <Container className="bg-white rounded-lg my-4 min-h-screen">
         <Box className="text-neutral-700 text-sm items-center pl-12">
           <Link href={"/"} className="flex items-center gap-2">
             <Home className="w-6 h-6 cursor-pointer" />

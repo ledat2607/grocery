@@ -68,4 +68,6 @@ export interface Order {
   order_status: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
+  image?: string;
+  shipperId?: string;
 }

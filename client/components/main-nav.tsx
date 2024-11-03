@@ -57,9 +57,9 @@ const MainNav = ({ className, scolled, ...props }: MainNavProps) => {
                 ? `${
                     scolled
                       ? "text-green-500 font-bold"
-                      : "text-black dark:text-white"
+                      : "text-blue-800 underline dark:text-white"
                   }`
-                : `${scolled ? "text-black" : " text-white"}`
+                : `${scolled ? "text-black" : " text-green-600"}`
             )}
           >
             {route.label}

@@ -76,71 +76,11 @@ export const columns: ColumnDef<OrderColumns>[] = [
       const params = useParams();
       const router = useRouter();
 
-      const handleUpdateStatus = async () => {
-        try {
-          const response = await fetch(
-            `/api/stores/${params.storeId}/orders/${row.original.id}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                order_status: selectedStatus,
-                product: row.original,
-              }),
-            }
-          );
-
-          if (!response.ok) {
-            const errorMessage = await response.text();
-            console.error("Error updating status:", errorMessage);
-            return;
-          }
-
-          const updatedOrder = await response.json();
-          setIsOpen(false);
-          toast.success("Updated");
-          router.refresh();
-        } catch (error) {
-          console.error("Error in handleUpdateStatus:", error);
-        }
-      };
-
       return (
         <>
-          <Button
-            disabled={row.original.order_status === "Deliveried"}
-            onClick={() => setIsOpen(true)}
-          >
+          <Button disabled={row.original.order_status === "Deliveried"}>
             {row.original.order_status}
           </Button>
-          <Modal
-            title="Update Order Status"
-            desription="Select a new status for the order"
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-          >
-            <Select
-              defaultValue={selectedStatus}
-              onValueChange={setSelectedStatus}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Processing">Processing</SelectItem>
-                <SelectItem value="Delivering">On delivery</SelectItem>
-                <SelectItem value="Deliveried">Deliveried</SelectItem>
-              </SelectContent>
-            </Select>
-            <div className="flex justify-end mt-4">
-              <Button variant="outline" onClick={() => setIsOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleUpdateStatus}>Submit</Button>
-            </div>
-          </Modal>
         </>
       );
     },

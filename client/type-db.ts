@@ -69,4 +69,5 @@ export interface Order {
   userId: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
+  image?: string;
 }
