@@ -12,6 +12,7 @@ import getProducts from "@/actions/get-products";
 import { collection, doc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Category, Products } from "@/type-db";
+import { auth } from "@clerk/nextjs/server";
 
 interface MenuPageProps {
   searchParams: {
@@ -25,7 +26,7 @@ const MenuPage = async ({ searchParams }: MenuPageProps) => {
   try {
     const categories = (
       await getDocs(
-        collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "categories")
+        collection(doc(db, "stores", "Dig8zntOmcTZ2jURnCr5"), "categories")
       )
     ).docs.map((doc) => doc.data()) as Category[];
 

@@ -31,7 +31,7 @@ export const CellAction = ({ data }: CellActionProps) => {
       const shipperId = UserRoles[1]?.id; // Adjust index as needed
 
       // Update the order with the shipperId and additional data
-      await axios.patch(`/api/stores/GsGFvwku3vPwlUyXKUnn/shipper`, {
+      await axios.patch(`/api/stores/Dig8zntOmcTZ2jURnCr5/shipper`, {
         shipperId,
         orderId: data.id,
         ...data,

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import getProducts from "@/actions/get-products"; // Assuming you have this function elsewhere
 import Container from "@/components/container";
 import Popularcontent from "@/components/popular-content";
 import SlideBanner from "@/components/slide-banner";
@@ -24,7 +23,7 @@ const HomePage = () => {
     const fetchProducts = async () => {
       try {
         const productSnapshot = await getDocs(
-          collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "products")
+          collection(doc(db, "stores", "Dig8zntOmcTZ2jURnCr5"), "products")
         );
         const productData = productSnapshot.docs.map((doc) =>
           doc.data()
@@ -32,7 +31,7 @@ const HomePage = () => {
         setProducts(productData.filter((pro) => pro.isFeatured === true));
 
         const billboardSnapshot = await getDocs(
-          collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "billboards")
+          collection(doc(db, "stores", "Dig8zntOmcTZ2jURnCr5"), "billboards")
         );
         const billboardData = billboardSnapshot.docs.map((doc) =>
           doc.data()

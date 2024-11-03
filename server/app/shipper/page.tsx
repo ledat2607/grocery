@@ -10,9 +10,10 @@ import { ShippingColumns } from "./components/columns";
 
 const ShipperPage = async () => {
   const { userId } = await auth();
+  console.log(userId);
   const orderData = (
     await getDocs(
-      collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "orders")
+      collection(doc(db, "stores", "Dig8zntOmcTZ2jURnCr5"), "orders")
     )
   ).docs.map((doc) => doc.data()) as Order[];
 

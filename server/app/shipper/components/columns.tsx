@@ -1,16 +1,20 @@
-"use client";
-
+// columns.ts
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { Product } from "@/type-db";
 import { useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; 
-import Modal from "@/components/modal"; // Ensure the modal import is correct
-import { useParams, useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import CellImage from "@/app/(dashboard)/[storeId]/(routes)/billboards/components/cell-image";
 import { CellAction } from "./cell-actions";
+import Modal from "./modal";
 
 // Define the shape of your data
 export type ShippingColumns = {
@@ -31,11 +35,7 @@ export const columns: ColumnDef<ShippingColumns>[] = [
   {
     accessorKey: "id",
     header: "Order Id",
-    cell: ({ row }) => (
-      <Button onClick={() => handleRowClick(row.original)}>
-        {row.original.id}
-      </Button>
-    ),
+    cell: ({ row }) => <Button>{row.original.id}</Button>,
   },
   {
     accessorKey: "phone",
@@ -76,22 +76,26 @@ export const columns: ColumnDef<ShippingColumns>[] = [
     header: "Status",
     cell: ({ row }) => {
       const [isOpen, setIsOpen] = useState(false);
-      const [selectedStatus, setSelectedStatus] = useState(row.original.order_status);
-      const params = useParams();
+      const [selectedStatus, setSelectedStatus] = useState(
+        row.original.order_status
+      );
       const router = useRouter();
 
       const handleUpdateStatus = async () => {
         try {
-          const response = await fetch(`/api/stores/GsGFvwku3vPwlUyXKUnn/orders/${row.original.id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              order_status: selectedStatus,
-              product: row.original,
-            }),
-          });
+          const response = await fetch(
+            `/api/stores/Dig8zntOmcTZ2jURnCr5/orders/${row.original.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                order_status: selectedStatus,
+                product: row.original,
+              }),
+            }
+          );
 
           if (!response.ok) {
             const errorMessage = await response.text();
@@ -111,7 +115,10 @@ export const columns: ColumnDef<ShippingColumns>[] = [
       return (
         <>
           <Button
-            disabled={row.original.order_status === "Deliveried" || row.original.idShipper === undefined}
+            disabled={
+              row.original.order_status === "Deliveried" ||
+              row.original.idShipper === undefined
+            }
             onClick={() => setIsOpen(true)}
           >
             {row.original.order_status}
@@ -122,7 +129,10 @@ export const columns: ColumnDef<ShippingColumns>[] = [
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
           >
-            <Select defaultValue={selectedStatus} onValueChange={setSelectedStatus}>
+            <Select
+              defaultValue={selectedStatus}
+              onValueChange={setSelectedStatus}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a status" />
               </SelectTrigger>
@@ -159,50 +169,3 @@ export const columns: ColumnDef<ShippingColumns>[] = [
   },
   { id: "actions", cell: ({ row }) => <CellAction data={row.original} /> },
 ];
-
-// Main component
-const YourComponent = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<ShippingColumns | null>(null);
-
-  // Function to handle row click
-  const handleRowClick = (order: ShippingColumns) => {
-    setSelectedOrder(order);
-    setIsModalOpen(true);
-  };
-
-  return (
-    <div>
-      {/* Render your table with columns here */}
-      {/* Assuming you have a Table component that takes columns as a prop */}
-      {/* <Table columns={columns} data={yourData} /> */}
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      >
-        {selectedOrder && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Order Details</h2>
-            <p><strong>Order ID:</strong> {selectedOrder.id}</p>
-            <p><strong>User Phone:</strong> {selectedOrder.phone}</p>
-            <p><strong>Address:</strong> {selectedOrder.address}</p>
-            <p><strong>Status:</strong> {selectedOrder.order_status}</p>
-            <p><strong>Total Price:</strong> {selectedOrder.totalPrice}</p>
-            <h3 className="font-semibold mt-4">Products:</h3>
-            <ul>
-              {selectedOrder.productQuantities.map((item) => (
-                <li key={item.productId}>
-                  Product ID: {item.productId} (Quantity: {item.qty})
-                </li>
-              ))}
-            </ul>
-            <p><strong>Created At:</strong> {selectedOrder.createdAt}</p>
-          </div>
-        )}
-      </Modal>
-    </div>
-  );
-};
-
-export default YourComponent;

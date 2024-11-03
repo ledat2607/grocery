@@ -10,14 +10,14 @@ import OrderContent from "./order-content";
 
 export const revalidate = 0;
 
-const OrderPage = async({ params }: { params: { storeId: string } }) => {
-    const { userId } = auth();
-    const orderData = (
-      await getDocs(
-        collection(doc(db, "stores", "GsGFvwku3vPwlUyXKUnn"), "orders")
-      )
-    ).docs.map((doc) => doc.data()) as Order[];
-const formatedOrder = orderData.filter((item) => item?.userId === userId);
+const OrderPage = async ({ params }: { params: { storeId: string } }) => {
+  const { userId } = auth();
+  const orderData = (
+    await getDocs(
+      collection(doc(db, "stores", "Dig8zntOmcTZ2jURnCr5"), "orders")
+    )
+  ).docs.map((doc) => doc.data()) as Order[];
+  const formatedOrder = orderData.filter((item) => item?.userId === userId);
   return (
     <>
       <Container className="bg-white rounded-lg my-4 min-h-screen">
@@ -39,5 +39,5 @@ const formatedOrder = orderData.filter((item) => item?.userId === userId);
     </>
   );
 };
- 
+
 export default OrderPage;

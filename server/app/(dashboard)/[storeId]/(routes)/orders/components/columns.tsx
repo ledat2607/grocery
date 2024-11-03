@@ -4,13 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { CellAction } from "./cell-action";
-import { Product } from "@/type-db";
 import CellImage from "../../billboards/components/cell-image";
-import { useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; 
-import { Modal } from "@/components/modal";
-import { useParams, useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+
 
 // This type is used to define the shape of our data.
 export type OrderColumns = {
@@ -69,13 +64,6 @@ export const columns: ColumnDef<OrderColumns>[] = [
     accessorKey: "order_status",
     header: "Status",
     cell: ({ row }) => {
-      const [isOpen, setIsOpen] = useState(false);
-      const [selectedStatus, setSelectedStatus] = useState(
-        row.original.order_status
-      );
-      const params = useParams();
-      const router = useRouter();
-
       return (
         <>
           <Button disabled={row.original.order_status === "Deliveried"}>
