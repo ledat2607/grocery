@@ -46,9 +46,9 @@ export const PATCH = async (
     }
 
     const storeData = store.data();
-    if (storeData?.userId !== userId) {
-      return new NextResponse("Unauthorized", { status: 403 });
-    }
+    // if (storeData?.userId !== userId) {
+    //   return new NextResponse("Unauthorized", { status: 403 });
+    // }
 
     const orderRef = await getDoc(
       doc(db, "stores", params.storeId, "orders", params.orderId)
