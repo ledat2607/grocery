@@ -1,3 +1,4 @@
+import { UserRoles } from "@/const";
 import { db } from "@/lib/firebase";
 import { Store } from "@/type-db";
 import { auth } from "@clerk/nextjs/server";
@@ -16,11 +17,16 @@ const SetupLayout = async ({ children }: { children: React.ReactNode }) => {
 
   let store = null as any;
 
-  storeSnap.forEach(doc=>{
-      store = doc.data() as Store;
-      return;
-  })
-  console.log(store);
+  const userRole = UserRoles.find((user) => user.id === userId);
+
+  if (userRole?.role === "shipper") {
+    redirect("/shipper");
+  }
+
+  storeSnap.forEach((doc) => {
+    store = doc.data() as Store;
+    return;
+  });
   if(store){
       redirect(`/${store?.id}`);
   }
