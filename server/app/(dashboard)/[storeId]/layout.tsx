@@ -18,6 +18,13 @@ const DashboardLayout = async ({ children, params }: DashboardProps) => {
     redirect("/sign-in");
   }
 
+  // Check if the user is an admin or shipper based on userId
+  const userRole = UserRoles.find((user) => user.id === userId);
+
+  if (userRole?.role === "shipper") {
+    redirect("/shipper");
+  }
+
   const storeSnap = await getDocs(
     query(
       collection(db, "stores"),
@@ -35,11 +42,6 @@ const DashboardLayout = async ({ children, params }: DashboardProps) => {
   if (!store) {
     redirect("/");
   }
-  if (userId !== UserRoles[0].id.toString() || userId === null) {
-    redirect("/shipper");
-  }
-
-  // Check user role
 
   return (
     <>
